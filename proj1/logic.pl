@@ -19,6 +19,7 @@ display_game(X) :-
     print_matrix(X),
     write('\n\n').
 
+% iterates through rows 
 print_matrix([]).
 print_matrix([Head|Tail]) :-
     write('|--'),
@@ -26,6 +27,7 @@ print_matrix([Head|Tail]) :-
     write('|  |  |  |  |  |  |\n'),
     print_matrix(Tail).
 
+% prints rows
 print_line([]) :-
     write('|\n').
 print_line([Head|Tail]) :-
@@ -33,6 +35,7 @@ print_line([Head|Tail]) :-
     write('--'),
     print_line(Tail).
 
+% prints a single piece
 print_piece(empty) :-
     write('o').
 print_piece([Head|Tail]) :-
