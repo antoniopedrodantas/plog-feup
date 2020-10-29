@@ -2,5 +2,5 @@
 :- consult('logic.pl').
 
 play :- 
-    mainMenu.
+    main_menu.
 

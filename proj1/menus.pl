@@ -1,18 +1,18 @@
-mainMenu :-
-    printMainMenu,
+main_menu :-
+    print_main_menu,
     read(Input),
-    manageInput(Input).
+    manage_input(Input).
 
-manageInput(1) :-
-    startGame,
-    mainMenu.
-manageInput(2) :-
+manage_input(1) :-
+    start_game,
+    main_menu.
+manage_input(2) :-
     write('Exiting...\n').
-manageInput(_Other) :-
+manage_input(_Other) :-
     write('\nERROR: that option does not exist.\n\n'),
-    mainMenu.
+    main_menu.
 
-printMainMenu :-
+print_main_menu :-
     write('Welcome to Nava \n'),
     write('1. Play\n'),
     write('2. Exit\n\n'),

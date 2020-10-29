@@ -1,10 +1,10 @@
 % starts game, first instantiates the board and then displays it
-startGame :-
-    initBoard(InitialBoard),
-    displayGame(InitialBoard).
+start_game :-
+    initial(InitialBoard),
+    display_game(InitialBoard).
 
 % initializes board
-initBoard([
+initial([
     [empty, empty, empty, empty, [d-1, d-1, d-1, d-1]],
     [empty, empty, empty, empty, empty],
     [empty, empty, empty, empty, empty],
@@ -13,29 +13,29 @@ initBoard([
 ]).
 
 % displays board
-displayGame(X) :-
+display_game(X) :-
     write('\n\n'),
     write('|  |  |  |  |  |  |\n'),
-    printMatrix(X),
+    print_matrix(X),
     write('\n\n').
 
-printMatrix([]).
-printMatrix([Head|Tail]) :-
+print_matrix([]).
+print_matrix([Head|Tail]) :-
     write('|--'),
-    printLine(Head),
+    print_line(Head),
     write('|  |  |  |  |  |  |\n'),
-    printMatrix(Tail).
+    print_matrix(Tail).
 
-printLine([]) :-
+print_line([]) :-
     write('|\n').
-printLine([Head|Tail]) :-
-    printPiece(Head),
+print_line([Head|Tail]) :-
+    print_piece(Head),
     write('--'),
-    printLine(Tail).
+    print_line(Tail).
 
-printPiece(empty) :-
+print_piece(empty) :-
     write('o').
-printPiece([Head|Tail]) :-
+print_piece([Head|Tail]) :-
     write('x1').
-printPiece(_Other) :-
+print_piece(_Other) :-
     write('ERROR').
