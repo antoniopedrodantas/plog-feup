@@ -5,17 +5,17 @@ start_game :-
 
 % initializes board
 initial([
-    [empty, empty, empty, empty, [d-1, d-1, d-1, d-1]],
+    [empty, empty, empty, empty, [d-1, d-1, d-1, d-1, d-1, d-1]],
     [empty, empty, empty, empty, empty],
     [empty, empty, empty, empty, empty],
     [empty, empty, empty, empty, empty],
-    [[d-2, d-2, d-2, d-2], empty, empty, empty, empty]
+    [[d-2, d-2, d-2, d-2, d-2, d-2], empty, empty, empty, empty]
 ]).
 
 % displays board
 display_game(X) :-
     write('\n\n'),
-    write('|  |  |  |  |  |  |\n'),
+    write('|  |   |   |   |   |   |\n'),
     print_matrix(X),
     write('\n\n').
 
@@ -24,7 +24,7 @@ print_matrix([]).
 print_matrix([Head|Tail]) :-
     write('|--'),
     print_line(Head),
-    write('|  |  |  |  |  |  |\n'),
+    write('|  |   |   |   |   |   |\n'),
     print_matrix(Tail).
 
 % prints rows
@@ -37,8 +37,15 @@ print_line([Head|Tail]) :-
 
 % prints a single piece
 print_piece(empty) :-
-    write('o').
+    write('oo').
 print_piece([Head|Tail]) :-
-    write('x1').
+    print_head(Head),
+    write('6').
 print_piece(_Other) :-
     write('ERROR').
+
+% gets type of piece and player
+print_head(d-1) :-
+    write('X').
+print_head(d-2) :-
+    write('Z').
