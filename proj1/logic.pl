@@ -12,7 +12,7 @@ start_game :-
 % second element has remaining cubes info
 initial([
     [[[empty], [empty], [empty], [empty], [d-1, d-1, d-1, d-1, d-1, d-1]],
-    [[empty], [empty], [d-1], [empty], [empty]],
+    [[empty], [empty], [empty], [empty], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
     [[d-2, d-2, d-2, d-2, d-2, d-2], [empty], [empty], [empty], [empty]]],
@@ -75,7 +75,7 @@ print_head(d-2) :-
 
 % calculates list length -> list_length(+List, -N)
 list_length([], 0).
-list_length([H|T], N) :- 
+list_length([_H|T], N) :- 
     length(T, N1),
     N is N1 + 1.
 
@@ -84,28 +84,25 @@ list_length([H|T], N) :-
 % 4 possible directions
 % makes size of stack moved is <= number of places
 valid_moves(Board, Player, ListOfMoves) :-
-    find_pieces(Board, Player, [], NPos),
-    write(NPos),
+    find_pieces(Board, Player, PositionsPieces, Positions),
+    write(Positions),
     write('\n').
 
 % finds player's pieces in the game board
-find_pieces([], Player, Positions, NPos).
-find_pieces([Row|Tail], Player, Positions, NPos) :-
-    find_row(Row, Player, Positions, NPos),
-    find_pieces(Tail, Player, NPos, NPos).
+find_pieces([], Player, PositionsPieces, PositionsPieces).
+find_pieces([Row|Tail], Player, PositionsPieces, Positions) :-
+    find_row(Row, Player, Positions, PositionsPieces, PositionsRow),
+    find_pieces(Tail, Player, PositionsRow, Positions).
 
 % checks each row in 
-find_row([], Player, Positions, NPos).
-find_row([Element|Tail], Player, Positions, NPos) :-
+find_row([], Player, Positions, PositionsPieces, PositionsPieces).
+find_row([Element|Tail], Player, Positions, PositionsPieces, PositionsRow) :-
     first(Element, First),
-    element(First, Player, Positions, NPositions),
-    write(NPositions),
-    write('\n'),
-    find_row(Tail, Payer, NPositions, NPos).
+    element(First, Player, PositionsPieces, NPositions),
+    find_row(Tail, Player, Positions, NPositions, PositionsRow).
 
 % checks whose is element
 element(d-1, 1, Positions, NPos) :-
-    write('hey\n'),
     append(Positions, ['hey'], NPos).
 element(d-2, 2, Positions, NPos) :-
     append(Positions, ['hey'], NPos).
