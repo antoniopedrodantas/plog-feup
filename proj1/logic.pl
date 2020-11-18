@@ -1,7 +1,7 @@
 % starts game, first instantiates the board and then displays it
 start_game :-
     initial(InitialBoard),
-    display_game(InitialBoard).
+    display_game(InitialBoard, 1).
 
 % initializes board
 initial([
@@ -13,19 +13,25 @@ initial([
 ]).
 
 % displays board
-display_game(X) :-
+display_game(GameState, Player) :-
     write('\n\n'),
-    write('|  |   |   |   |   |   |\n'),
-    print_matrix(X),
+    write('   a   b   c   d   e   \n'),
+    write('   |   |   |   |   |   \n'),
+    print_matrix(GameState, 1),
+    write('\n'),
+    write('P1: X0x9\n'),
+    write('P2: Z0x9'),
     write('\n\n').
 
 % iterates through rows 
-print_matrix([]).
-print_matrix([Head|Tail]) :-
-    write('|--'),
+print_matrix([], Iterator).
+print_matrix([Head|Tail], Iterator) :-
+    write(Iterator),
+    write('--'),
     print_line(Head),
-    write('|  |   |   |   |   |   |\n'),
-    print_matrix(Tail).
+    write('   |   |   |   |   |   \n'),
+    IteratorPlus is Iterator + 1,
+    print_matrix(Tail, IteratorPlus).
 
 % prints rows
 print_line([]) :-
