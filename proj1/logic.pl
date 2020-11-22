@@ -12,9 +12,9 @@ start_game :-
 % second element has remaining cubes info
 initial([
     [[[empty], [empty], [empty], [empty], [d-1, d-1, d-1, d-1, d-1, d-1]],
-    [[empty], [empty], [d-1], [empty], [d-1]],
     [[empty], [empty], [empty], [empty], [empty]],
-    [[empty], [empty], [empty], [d-1], [empty]],
+    [[empty], [empty], [empty], [empty], [empty]],
+    [[empty], [empty], [empty], [empty], [empty]],
     [[d-2, d-2, d-2, d-2, d-2, d-2], [empty], [empty], [empty], [empty]]],
     9, 9
 ]).
@@ -87,26 +87,76 @@ valid_moves(Board, Player, ListOfMoves) :-
     find_pieces(Board, Player, PositionsPieces, Positions, 1),
     PositionsTmp = Positions,
     get_pieces(Board, PositionsTmp, [], Pieces),
-    write('Positions: '),
-    write(Positions),
-    write('\n'),
-    write('Pieces: '),
-    write(Pieces),
+    get_valid_moves(Positions, Pieces, [], ValidMoves),
+    write('ValidMoves: '),
+    write(ValidMoves),
     write('\n\n').
-    %get_valid_moves(Positions, Pieces, [], ValidMoves),
-    %rite('ValidMoves: ').
 
-% get_valid_piece_moves(+Position, +Piece, +ValidPieceMovesTmp, -ValidPieceMoves)
-%get_valid_piece_moves(Position, Piece, ValidPieceMovesTmp, ValidPieceMoves)
+% gets a piece's possible up moves
+check_up(Position, Piece, X, 1, L, ValidUpMovesTmp, ValidUpMovesTmp).
+check_up(Position, Piece, X, Y, 0, ValidUpMovesTmp, ValidUpMovesTmp).
+check_up(Position, Piece, X, Y, L, ValidUpMovesTmp, ValidUpMoves) :-
+    YI is Y-1,
+    LI is L-1,
+    AsciiNumber is X + 96,
+    char_code(Letter, AsciiNumber),
+    append(ValidUpMovesTmp, [Position:YI-Letter], NewValidUpMoves),
+    check_up(Position, Piece, X, YI, LI, NewValidUpMoves, ValidUpMoves).
+
+% gets a piece's possible down moves
+check_down(Position, Piece, X, 5, L, ValidDownMovesTmp, ValidDownMovesTmp).
+check_down(Position, Piece, X, Y, 0, ValidDownMovesTmp, ValidDownMovesTmp).
+check_down(Position, Piece, X, Y, L, ValidDownMovesTmp, ValidDownMoves) :-
+    YI is Y+1,
+    LI is L-1,
+    AsciiNumber is X + 96,
+    char_code(Letter, AsciiNumber),
+    append(ValidDownMovesTmp, [Position:YI-Letter], NewValidDownMoves),
+    check_down(Position, Piece, X, YI, LI, NewValidDownMoves, ValidDownMoves).
+
+% gets a piece's possible left moves
+check_left(Position, Piece, 1, Y, L, ValidLeftMovesTmp, ValidLeftMovesTmp).
+check_left(Position, Piece, X, Y, 0, ValidLeftMovesTmp, ValidLeftMovesTmp).
+check_left(Position, Piece, X, Y, L, ValidLeftMovesTmp, ValidLeftMoves) :-
+    XI is X-1,
+    LI is L-1,
+    AsciiNumber is XI + 96,
+    char_code(Letter, AsciiNumber),
+    append(ValidLeftMovesTmp, [Position:Y-Letter], NewValidLeftMoves),
+    check_left(Position, Piece, XI, Y, LI, NewValidLeftMoves, ValidLeftMoves).
+
+% gets a piece's possible right moves
+check_right(Position, Piece, 5, Y, L, ValidRightMovesTmp, ValidRightMovesTmp).
+check_right(Position, Piece, X, Y, 0, ValidRightMovesTmp, ValidRightMovesTmp).
+check_right(Position, Piece, X, Y, L, ValidRightMovesTmp, ValidRightMoves) :-
+    XI is X+1,
+    LI is L-1,
+    AsciiNumber is XI + 96,
+    char_code(Letter, AsciiNumber),
+    append(ValidRightMovesTmp, [Position:Y-Letter], NewValidRightMoves),
+    check_right(Position, Piece, XI, Y, LI, NewValidRightMoves, ValidRightMoves).
+
+% get_valid_piece_moves(+Position, +Piece, -ValidPieceMoves)
+get_valid_piece_moves(Position, Piece, ValidPieceMoves) :-
+    get_coordinates(Position, Y, X),
+    length(Piece, L),
+    check_up(Position, Piece, X, Y, L, [], ValidUpMoves),
+    append([], ValidUpMoves, VMU),
+    check_down(Position, Piece, X, Y, L, [], ValidDownMoves),
+    append(VMU, ValidDownMoves, VMD),
+    check_left(Position, Piece, X, Y, L, [], ValidLeftMoves),
+    append(VMD, ValidLeftMoves, VML),
+    check_right(Position, Piece, X, Y, L, [], ValidRightMoves),
+    append(VML, ValidRightMoves, ValidPieceMoves).
 
 % get_valid_moves(+Positions, +Pieces, +ValidMovesTmp, -ValidMoves).
-%get_valid_moves([], [], ValidMovesTmp, ValidMovesTmp).
-%get_valid_moves(Positions, Pieces, ValidMovesTmp, ValidMoves) :-
-%    first(Positions, PosHead, PosTail),
-%    first(Pieces, PieHead, PieTail),
-%    get_valid_piece_moves(PosHead, PieHead, [], ValidPieceMoves),
-%    append(ValidMovesTmp, ValidPieceMoves, NewValidMoves),
-%    get_valid_moves(PosTail, PieTail, NewValidMoves, ValidMoves).
+get_valid_moves([], [], ValidMovesTmp, ValidMovesTmp).
+get_valid_moves(Positions, Pieces, ValidMovesTmp, ValidMoves) :-
+    first(Positions, PosHead, PosTail),
+    first(Pieces, PieHead, PieTail),
+    get_valid_piece_moves(PosHead, PieHead, ValidPieceMoves),
+    append(ValidMovesTmp, ValidPieceMoves, NewValidMoves),
+    get_valid_moves(PosTail, PieTail, NewValidMoves, ValidMoves).
 
 % decomposes position into numbers
 position_numbers(X-Y, X, Y).
