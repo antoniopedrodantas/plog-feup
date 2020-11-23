@@ -1,4 +1,5 @@
 :- consult('utils.pl').
+:- consult('movement.pl').
 
 :- use_module(library(lists)).
 
@@ -13,7 +14,7 @@ start_game :-
 initial([
     [[[empty], [empty], [empty], [empty], [d-1, d-1, d-1, d-1, d-1, d-1]],
     [[empty], [empty], [empty], [empty], [empty]],
-    [[empty], [empty], [empty], [empty], [empty]],
+    [[empty], [empty], [d-1,-d1], [empty], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
     [[d-2, d-2, d-2, d-2, d-2, d-2], [empty], [empty], [empty], [empty]]],
     9, 9
@@ -28,8 +29,15 @@ display_game([Board|Cubes], Player) :-
     write('\n'),
     print_cubes(Cubes),
     write('\n\n'),
-    % test
-    valid_moves(Board, Player, []).
+    valid_moves(Board, Player, ListOfMoves),
+    write('Player '),
+    write(Player),
+    write('s turn: '),
+    write('\n'),
+    write('[Valid Moves]: '),
+    write(ListOfMoves),
+    write('\n\n'),
+    get_players_move([Board|Cubes], ListOfMoves, NewGameState).
 
 
 print_cubes([P1|Tail]) :-
@@ -87,10 +95,7 @@ valid_moves(Board, Player, ListOfMoves) :-
     find_pieces(Board, Player, PositionsPieces, Positions, 1),
     PositionsTmp = Positions,
     get_pieces(Board, PositionsTmp, [], Pieces),
-    get_valid_moves(Positions, Pieces, [], ValidMoves),
-    write('ValidMoves: '),
-    write(ValidMoves),
-    write('\n\n').
+    get_valid_moves(Positions, Pieces, [], ListOfMoves).
 
 % gets a piece's possible up moves
 check_up(Position, Piece, X, 1, L, ValidUpMovesTmp, ValidUpMovesTmp).
