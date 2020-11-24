@@ -70,6 +70,65 @@ difference(XI, XF, Y, Y, XD, YD) :-
     abs(XFTmp, XD),
     YD is Y - Y.
 
+
+
+% ------------------------------------------------ moves piece ------------------------------------------------
+
+check_counter(X, Y, X, Y, [empty], ElemFinal, ElemFinal).
+check_counter(X, Y, X, Y, ElemCmp, ElemFinal, NewElem) :-
+    append(ElemFinal, ElemCmp, NewElem).
+check_counter(Counter, CounterY, XF, YF, ElemCmp, ElemFinal, ElemCmp).
+
+%move_piece_row(+ElemFinal, +Counter, +CounterY, +XF, YF, +Board, -Row).
+move_piece_row(ElemFinal, 6, CounterY, XF, YF, Board, RowTmp, RowTmp).
+move_piece_row(ElemFinal, Counter, CounterY, XF, YF, Board, RowTmp, Row) :-
+    nth1(CounterY, Board, ElemCmpTmp),
+    nth1(Counter, ElemCmpTmp, ElemCmp),
+    check_counter(Counter, CounterY, XF, YF, ElemCmp, ElemFinal, NewElem),
+    append(RowTmp, [NewElem], NewRow),
+    CounterPlus is Counter + 1,
+    move_piece_row(ElemFinal, CounterPlus, CounterY, XF, YF, Board, NewRow, Row).
+
+% move_piece(+ElemFinal, +Counter, +XF, +YF, +Board, +BoardTmp, -NewBoard).
+move_piece(ElemFinal, 6, XF, YF, Board, BoardTmp, BoardTmp).
+move_piece(ElemFinal, Counter, XF, YF, Board, BoardTmp, NewBoard) :-
+    move_piece_row(ElemFinal, 1, Counter, XF, YF, Board, [], Row),
+    append(BoardTmp, [Row], NewBoardTmp),
+    CounterPlus is Counter + 1,
+    move_piece(ElemFinal, CounterPlus, XF, YF, Board, NewBoardTmp, NewBoard).
+
+% -------------------------------------------------------------------------------------------------------------
+
+% --------------------------------------------- update moved piece --------------------------------------------
+
+%check_update_counter
+check_update_counter(X, Y, X, Y, ElemCmp, [], [empty]).
+check_update_counter(X, Y, X, Y, ElemCmp, ElemRest, ElemRest).
+check_update_counter(Counter, CounterY, XI, YI, ElemCmp, ElemRest, ElemCmp).
+
+%update_piece_row(+ElemRest, +Counter, +CounterY, +XI, +YI, +Board, -Row).
+update_piece_row(ElemRest, 6, CounterY, XI, YI, Board, RowTmp, RowTmp).
+update_piece_row(ElemRest, Counter, CounterY, XI, YI, Board, RowTmp, Row) :-
+    nth1(CounterY, Board, ElemCmpTmp),
+    nth1(Counter, ElemCmpTmp, ElemCmp),
+    check_update_counter(Counter, CounterY, XI, YI, ElemCmp, ElemRest, NewElem),
+    append(RowTmp, [NewElem], NewRow),
+    CounterPlus is Counter + 1,
+    update_piece_row(ElemRest, CounterPlus, CounterY, XI, YI, Board, NewRow, Row).
+
+
+%update_moved_piece(+ElemRest, +Counter, +XI, +YI, +Board, +BoardTmp, -NewBoard).
+update_moved_piece(ElemRest, 6, XI, YI, Board, BoardTmp, BoardTmp).
+update_moved_piece(ElemRest, Counter, XI, YI, Board, BoardTmp, NewBoard) :-
+    update_piece_row(ElemRest, 1, Counter, XI, YI, Board, [], Row),
+    append(BoardTmp, [Row], NewBoardTmp),
+    CounterPlus is Counter + 1,
+    update_moved_piece(ElemRest, CounterPlus, XI, YI, Board, NewBoardTmp, NewBoard).
+
+% -------------------------------------------------------------------------------------------------------------
+
+make_new_game_state(NewBoard, Cubes, [NewBoard|Cubes]).
+
 % move(+GameState, +Move, -NewGameState).
 move([Board|Cubes], Move, NewGameState) :-
     get_both_positions(Move, Position1, Position2),
@@ -77,16 +136,12 @@ move([Board|Cubes], Move, NewGameState) :-
     nth1(YI, Board, Elem1Tmp),
     nth1(XI, Elem1Tmp, ElemInitial),
     get_coordinates(Position2, YF, XF),
-    write('Moved Elem: '), write(XI), write(' '), write(YI), write('\n'),
-    write('Current Final Elem: '), write(XF), write(' '), write(YF), write('\n'),
     difference(XI, XF, YI, YF, XD, YD),
-    write('Differences: '), write(XD), write(','), write(YD), write('\n'),
     Difference is YD + XD,
-    write(Difference),
-    write('\n'),
-    write(ElemInitial),
-    write('\n\n'),
     split_at(Difference, ElemInitial, ElemFinal, ElemRest),
-    write('ElemFinal: '), write(ElemFinal), write('\n'),
-    write('ElemRest: '), write(ElemRest), write('\n').
     %now we just have to move the elemFinal to Position2 and change the ElemInitial to ElemRest
+    move_piece(ElemFinal, 1, XF, YF, Board, [], NewBoardTmp),
+    update_moved_piece(ElemRest, 1, XI, YI, NewBoardTmp, [], NewBoard),
+    %write('NewBoard: '), write(NewBoard), write('\n').
+    make_new_game_state(NewBoard, Cubes, NewGameState).
+    %write(Board).

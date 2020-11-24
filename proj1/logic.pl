@@ -12,16 +12,16 @@ start_game :-
 % first element has board info
 % second element has remaining cubes info
 initial([
-    [[[empty], [empty], [empty], [empty], [d-1, d-1, d-1, d-1, d-1, d-1]],
+    [[[empty], [empty], [d-1], [empty], [d-1, d-1, d-1, d-1, d-1, d-1]],
     [[empty], [empty], [empty], [empty], [empty]],
-    [[empty], [empty], [d-1,-d1], [empty], [empty]],
+    [[empty], [empty], [d-1,d-1], [empty], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
     [[d-2, d-2, d-2, d-2, d-2, d-2], [empty], [empty], [empty], [empty]]],
     9, 9
 ]).
 
-% displays board
-display_game([Board|Cubes], Player) :-
+% displays board for player 1
+display_game([Board|Cubes], 1) :-
     write('\n\n'),
     write('   a   b   c   d   e   \n'),
     write('   |   |   |   |   |   \n'),
@@ -29,16 +29,35 @@ display_game([Board|Cubes], Player) :-
     write('\n'),
     print_cubes(Cubes),
     write('\n\n'),
-    valid_moves(Board, Player, ListOfMoves),
-    write('Player '),
-    write(Player),
-    write('s turn: '),
+    valid_moves(Board, 1, ListOfMoves),
+    write('Player 1s turn.'),
     write('\n'),
     write('[Valid Moves]: '),
     write(ListOfMoves),
     write('\n\n'),
-    get_players_move([Board|Cubes], ListOfMoves, NewGameState).
+    get_players_move([Board|Cubes], ListOfMoves, NewGameState),
+    % have isGameOver here !
+    %write('NewGameState: '), write(NewGameState), write('\n').
+    display_game(NewGameState, 2).
 
+% displays board for player 2
+display_game([Board|Cubes], 2) :-
+    write('\n\n'),
+    write('   a   b   c   d   e   \n'),
+    write('   |   |   |   |   |   \n'),
+    print_matrix(Board, 1),
+    write('\n'),
+    print_cubes(Cubes),
+    write('\n\n'),
+    valid_moves(Board, 2, ListOfMoves),
+    write('Player 2s turn.\n'),
+    write('[Valid Moves]: '),
+    write(ListOfMoves),
+    write('\n\n'),
+    get_players_move([Board|Cubes], ListOfMoves, NewGameState),
+    % have isGameOver here !
+    %write('NewGameState: '), write(NewGameState), write('\n').
+    display_game(NewGameState, 1).
 
 print_cubes([P1|Tail]) :-
     write('P1: X0x'),
