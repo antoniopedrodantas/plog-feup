@@ -3,22 +3,37 @@
 
 :- use_module(library(lists)).
 
+% -----------------------------------------------------------------------------------------
+% ------------------------------ Starting Environment -------------------------------------
+% -----------------------------------------------------------------------------------------
+
 % starts game, first instantiates the board and then displays it
-start_game :-
+
+%starts game for PvP
+start_game(1) :-
     initial(InitialBoard),
     display_game(InitialBoard, 1).
+
+%starts game for PvPC
+start_game(2) :-
+    initial(InitialBoard),
+    display_game(InitialBoard, 3).
 
 % initializes board
 % first element has board info
 % second element has remaining cubes info
 initial([
-    [[[empty], [empty], [d-1], [empty], [d-1, d-1, d-1, d-1, d-1, d-1]],
+    [[[empty], [empty], [empty], [empty], [d-1, d-1, d-1, d-1, d-1, d-1]],
     [[empty], [empty], [empty], [empty], [empty]],
-    [[empty], [empty], [d-1,d-1], [empty], [empty]],
+    [[empty], [empty], [empty], [empty], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
     [[d-2, d-2, d-2, d-2, d-2, d-2], [empty], [empty], [empty], [empty]]],
     9, 9
 ]).
+
+% -----------------------------------------------------------------------------------------
+% ---------------------------------- Player vs Player -------------------------------------
+% -----------------------------------------------------------------------------------------
 
 % displays board for player 1
 display_game([Board|Cubes], 1) :-
@@ -58,6 +73,53 @@ display_game([Board|Cubes], 2) :-
     % have isGameOver here !
     %write('NewGameState: '), write(NewGameState), write('\n').
     display_game(NewGameState, 1).
+
+% -----------------------------------------------------------------------------------------
+% --------------------------------- Player vs Computer ------------------------------------
+% -----------------------------------------------------------------------------------------
+
+% displays board for player 1 when he comes against the PC
+display_game([Board|Cubes], 3) :-
+    write('\n\n'),
+    write('   a   b   c   d   e   \n'),
+    write('   |   |   |   |   |   \n'),
+    print_matrix(Board, 1),
+    write('\n'),
+    print_cubes(Cubes),
+    write('\n\n'),
+    valid_moves(Board, 1, ListOfMoves),
+    write('Player 1s turn.'),
+    write('\n'),
+    write('[Valid Moves]: '),
+    write(ListOfMoves),
+    write('\n\n'),
+    get_players_move([Board|Cubes], ListOfMoves, NewGameState),
+    % have isGameOver here !
+    %write('NewGameState: '), write(NewGameState), write('\n').
+    display_game(NewGameState, 4).
+
+% displays board for player 1 when he comes against the PC
+display_game([Board|Cubes], 4) :-
+    write('\n\n'),
+    write('   a   b   c   d   e   \n'),
+    write('   |   |   |   |   |   \n'),
+    print_matrix(Board, 1),
+    write('\n'),
+    print_cubes(Cubes),
+    write('\n\n'),
+    valid_moves(Board, 2, ListOfMoves),
+    write('Computers turn.\n'),
+    write('[Valid Moves]: '),
+    write(ListOfMoves),
+    write('\n\n').
+    %get_players_move([Board|Cubes], ListOfMoves, NewGameState).
+    % have isGameOver here !
+    %write('NewGameState: '), write(NewGameState), write('\n').
+    %display_game(NewGameState, 3).
+
+% -----------------------------------------------------------------------------------------
+% ------------------------------- Logic Behind All This -----------------------------------
+% -----------------------------------------------------------------------------------------
 
 print_cubes([P1|Tail]) :-
     write('P1: X0x'),
