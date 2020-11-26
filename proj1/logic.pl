@@ -2,6 +2,7 @@
 :- consult('movement.pl').
 
 :- use_module(library(lists)).
+:- use_module(library(random)).
 
 % -----------------------------------------------------------------------------------------
 % ------------------------------ Starting Environment -------------------------------------
@@ -111,11 +112,12 @@ display_game([Board|Cubes], 4) :-
     write('Computers turn.\n'),
     write('[Valid Moves]: '),
     write(ListOfMoves),
-    write('\n\n').
+    write('\n\n'),
+    get_ai_move([Board|Cubes], ListOfMoves, NewGameState),
     %get_players_move([Board|Cubes], ListOfMoves, NewGameState).
     % have isGameOver here !
     %write('NewGameState: '), write(NewGameState), write('\n').
-    %display_game(NewGameState, 3).
+    display_game(NewGameState, 3).
 
 % -----------------------------------------------------------------------------------------
 % ------------------------------- Logic Behind All This -----------------------------------

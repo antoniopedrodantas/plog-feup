@@ -145,3 +145,11 @@ move([Board|Cubes], Move, NewGameState) :-
     %write('NewBoard: '), write(NewBoard), write('\n').
     make_new_game_state(NewBoard, Cubes, NewGameState).
     %write(Board).
+
+% ------------------------------------------------------------ ai ------------------------------------------------        
+
+get_ai_move(GameState, ListOfMoves, NewGameState) :-
+    length(ListOfMoves, Length),
+    random(1, Length, Index),
+    nth1(Index, ListOfMoves, Move),
+    move(GameState, Move, NewGameState).
