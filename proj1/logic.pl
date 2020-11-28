@@ -24,10 +24,10 @@ start_game(2) :-
 % first element has board info
 % second element has remaining cubes info
 initial([
-    [[[empty], [empty], [empty], [empty], [d-1, d-1, d-1, d-1, d-1, d-1]],
+    [[[empty], [empty], [empty], [empty], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
-    [[empty], [empty], [empty], [empty], [empty]],
+    [[d-1], [empty], [empty], [empty], [empty]],
     [[d-2, d-2, d-2, d-2, d-2, d-2], [empty], [empty], [empty], [empty]]],
     9, 9
 ]).
@@ -52,9 +52,8 @@ display_game([Board|Cubes], 1) :-
     write(ListOfMoves),
     write('\n\n'),
     get_players_move([Board|Cubes], ListOfMoves, NewGameState),
-    % have isGameOver here !
-    %write('NewGameState: '), write(NewGameState), write('\n').
-    display_game(NewGameState, 2).
+    game_over(NewGameState, Winner),
+    end_game(Winner, Player, NewGameState).
 
 % displays board for player 2
 display_game([Board|Cubes], 2) :-
@@ -71,9 +70,8 @@ display_game([Board|Cubes], 2) :-
     write(ListOfMoves),
     write('\n\n'),
     get_players_move([Board|Cubes], ListOfMoves, NewGameState),
-    % have isGameOver here !
-    %write('NewGameState: '), write(NewGameState), write('\n').
-    display_game(NewGameState, 1).
+    game_over(NewGameState, Winner),
+    end_game(Winner, Player, NewGameState).
 
 % -----------------------------------------------------------------------------------------
 % --------------------------------- Player vs Computer ------------------------------------
@@ -290,3 +288,35 @@ element(d-2, 2, Positions, NPos, Row, Column) :-
     append(Positions, [Row-Letter], NPos).
 element(_Other, Player, Positions, NPos, Row, Column) :-
     append(Positions, [], NPos).
+
+% checks if game is over
+% game_over(+GameState, -Winner)
+game_over([Board|Cubes], Winner) :-
+   valid_moves(Board, 1, ListOfMoves1),
+   valid_moves(Board, 2, ListOfMoves2),
+   get_smaller_list(ListOfMoves1, ListOfMoves2, SmallerList, PF),
+   check_winner(SmallerList, PF, Winner).
+
+
+% checks if a player won
+% check_winner(+LisOfMoves, +Player, -Player)
+check_winner([], 1, 2).
+check_winner([], 2, 1).
+check_winner(_Other, Player, 0).
+
+% returns the smaller list between two given lists
+% get_smaller_list(+List1, +List2, -SmallerList, -PF)
+get_smaller_list(ListOfMoves1, ListOfMoves2, SmallerList, PF) :-
+    list_length(ListOfMoves1, L1),
+    list_length(ListOfMoves2, L2),
+    L1 > L2 -> 
+    SmallerList = ListOfMoves2, PF = 2 ; SmallerList = ListOfMoves1, PF = 1.
+
+% if there is a winner, ends game and states the winner, else continues game
+% end_game(+Winner, +Player, +GameState)
+end_game(0, 1, NewGameState) :- display_game(NewGameState, 2).
+end_game(0, 2, NewGameState) :- display_game(NewGameState, 1).
+end_game(1, 1, NewGameState) :- write('\nPlayer 1 wins the game ! :D \n\n').
+end_game(1, 2, NewGameState) :- write('\nPlayer 1 wins the game ! :D \n\n').
+end_game(2, 1, NewGameState) :- write('\nPlayer 2 wins the game ! :D \n\n').
+end_game(2, 2, NewGameState) :- write('\nPlayer 2 wins the game ! :D \n\n').
