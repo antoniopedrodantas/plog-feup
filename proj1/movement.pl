@@ -148,8 +148,50 @@ move([Board|Cubes], Move, NewGameState) :-
 
 % ------------------------------------------------------------ ai ------------------------------------------------        
 
-get_ai_move(GameState, ListOfMoves, NewGameState) :-
-    length(ListOfMoves, Length),
-    random(1, Length, Index),
-    nth1(Index, ListOfMoves, Move),
-    move(GameState, Move, NewGameState).
+check_piece([d-1], 1, 1).
+check_piece([d-1|Tail], 1, 1).
+check_piece([d-2], 2, 1).
+check_piece([d-2|Tail], 2, 1).
+check_piece(_Other, Player, 0).
+
+inspect_row([], Player, PTMP, PTMP).
+inspect_row([Piece|Tail], Player, PTMP, PiecesPerRow) :-
+    check_piece(Piece, Player, Number),
+    NewPTMP is Number + PTMP,
+    inspect_row(Tail, Player, NewPTMP, PiecesPerRow).
+
+inspect_board([], Player, VTMP, VTMP).
+inspect_board([Row|Tail], Player, VTMP, Value) :-
+    inspect_row(Row, Player, 0, PiecesPerRow),
+    NewVTMP is VTMP + PiecesPerRow,
+    inspect_board(Tail, Player, NewVTMP, Value).
+
+%value(+GameState, +Player, -Value).
+value([Board|Cubes], Player, Value) :-
+    inspect_board(Board, Player, 0, Value).
+    
+
+% returns best of valid moves according to value function
+get_best_move(GameState, [], Counter, BMTMP, BMTMP) :- write('counter: '), write(Counter), write('\n').
+get_best_move(GameState, [Move|Tail], Counter, BMTMP, BestMove) :-
+    move(GameState, Move, NewGameStateTmp),
+    value(NewGameStateTmp, 2, NewValue),
+    NewValue > Counter ->
+        get_best_move(GameState, Tail, NewValue, Move, BestMove);
+        get_best_move(GameState, Tail, Counter, BMTMP, BestMove).
+
+
+get_ai_move(GameState, Level, ListOfMoves, NewGameState) :-
+    get_best_move(GameState, ListOfMoves, 0, [], BestMove),
+    move(GameState, BestMove, NewGameState).
+    %when its random
+    %value(GameState, 2, Value),
+    %write('Value: '), write(Value), write('\n'),
+    %length(ListOfMoves, Length),
+    %random(1, Length, Index),
+    %nth1(Index, ListOfMoves, Move),
+    %move(GameState, Move, NewGameState).
+
+
+
+

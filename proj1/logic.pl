@@ -96,9 +96,6 @@ display_game([Board|Cubes], 3) :-
     game_over(NewGameState, Winner),
     write('Winner: '), write(Winner), write('\n'),
     end_game(Winner, 3, NewGameState).
-    % have isGameOver here !
-    %write('NewGameState: '), write(NewGameState), write('\n').
-    %display_game(NewGameState, 4).
 
 % displays board for player 1 when he comes against the PC
 display_game([Board|Cubes], 4) :-
