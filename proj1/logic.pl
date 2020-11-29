@@ -25,9 +25,9 @@ start_game(2) :-
 % second element has remaining cubes info
 initial([
     [[[empty], [empty], [empty], [empty], [empty]],
+    [[empty], [empty], [empty], [d-1,d-1], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
-    [[d-1], [empty], [empty], [empty], [empty]],
     [[d-2, d-2, d-2, d-2, d-2, d-2], [empty], [empty], [empty], [empty]]],
     9, 9
 ]).
@@ -53,7 +53,7 @@ display_game([Board|Cubes], 1) :-
     write('\n\n'),
     get_players_move([Board|Cubes], ListOfMoves, NewGameState),
     game_over(NewGameState, Winner),
-    end_game(Winner, Player, NewGameState).
+    end_game(Winner, 1, NewGameState).
 
 % displays board for player 2
 display_game([Board|Cubes], 2) :-
@@ -71,7 +71,7 @@ display_game([Board|Cubes], 2) :-
     write('\n\n'),
     get_players_move([Board|Cubes], ListOfMoves, NewGameState),
     game_over(NewGameState, Winner),
-    end_game(Winner, Player, NewGameState).
+    end_game(Winner, 2, NewGameState).
 
 % -----------------------------------------------------------------------------------------
 % --------------------------------- Player vs Computer ------------------------------------
@@ -93,9 +93,12 @@ display_game([Board|Cubes], 3) :-
     write(ListOfMoves),
     write('\n\n'),
     get_players_move([Board|Cubes], ListOfMoves, NewGameState),
+    game_over(NewGameState, Winner),
+    write('Winner: '), write(Winner), write('\n'),
+    end_game(Winner, 3, NewGameState).
     % have isGameOver here !
     %write('NewGameState: '), write(NewGameState), write('\n').
-    display_game(NewGameState, 4).
+    %display_game(NewGameState, 4).
 
 % displays board for player 1 when he comes against the PC
 display_game([Board|Cubes], 4) :-
@@ -112,10 +115,13 @@ display_game([Board|Cubes], 4) :-
     write(ListOfMoves),
     write('\n\n'),
     get_ai_move([Board|Cubes], ListOfMoves, NewGameState),
+    game_over(NewGameState, Winner),
+    write('Winner: '), write(Winner), write('\n'),
+    end_game(Winner, 4, NewGameState).
     %get_players_move([Board|Cubes], ListOfMoves, NewGameState).
     % have isGameOver here !
     %write('NewGameState: '), write(NewGameState), write('\n').
-    display_game(NewGameState, 3).
+    %display_game(NewGameState, 3).
 
 % -----------------------------------------------------------------------------------------
 % ------------------------------- Logic Behind All This -----------------------------------
@@ -316,7 +322,15 @@ get_smaller_list(ListOfMoves1, ListOfMoves2, SmallerList, PF) :-
 % end_game(+Winner, +Player, +GameState)
 end_game(0, 1, NewGameState) :- display_game(NewGameState, 2).
 end_game(0, 2, NewGameState) :- display_game(NewGameState, 1).
+end_game(0, 3, NewGameState) :- display_game(NewGameState, 4).
+end_game(0, 4, NewGameState) :- display_game(NewGameState, 3).
+
 end_game(1, 1, NewGameState) :- write('\nPlayer 1 wins the game ! :D \n\n').
 end_game(1, 2, NewGameState) :- write('\nPlayer 1 wins the game ! :D \n\n').
 end_game(2, 1, NewGameState) :- write('\nPlayer 2 wins the game ! :D \n\n').
 end_game(2, 2, NewGameState) :- write('\nPlayer 2 wins the game ! :D \n\n').
+
+end_game(1, 3, NewGameState) :- write('\nYou won the game ! :D \n\n').
+end_game(1, 4, NewGameState) :- write('\nYou won the game ! :D \n\n').
+end_game(2, 3, NewGameState) :- write('\nComputer won the game ! D: \n\n').
+end_game(2, 4, NewGameState) :- write('\nComputer won the game ! D: \n\n').
