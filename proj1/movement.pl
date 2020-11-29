@@ -146,10 +146,17 @@ move([Board|Cubes], Move, NewGameState) :-
 
 % ------------------------------------------------------------ ai ------------------------------------------------        
 
+% gets increment and decrement values for value function
 check_piece([d-1], 1, 1).
-check_piece([d-1|Tail], 1, 1).
+check_piece([d-1|_], 1, 1).
 check_piece([d-2], 2, 1).
-check_piece([d-2|Tail], 2, 1).
+check_piece([d-2|_], 2, 1).
+
+check_piece([d-1], 2, -1).
+check_piece([d-1|_], 2, -1).
+check_piece([d-2], 1, -1).
+check_piece([d-2|_], 1, -1).
+
 check_piece(_Other, Player, 0).
 
 inspect_row([], Player, PTMP, PTMP).
@@ -161,13 +168,12 @@ inspect_row([Piece|Tail], Player, PTMP, PiecesPerRow) :-
 inspect_board([], Player, VTMP, VTMP).
 inspect_board([Row|Tail], Player, VTMP, Value) :-
     inspect_row(Row, Player, 0, PiecesPerRow),
-    NewVTMP is VTMP + PiecesPerRow,
+    NewVTMP is PiecesPerRow + VTMP,
     inspect_board(Tail, Player, NewVTMP, Value).
 
 %value(+GameState, +Player, -Value).
 value([Board|Cubes], Player, Value) :-
     inspect_board(Board, Player, 0, Value).
-    
 
 % returns best of valid moves according to value function
 get_best_move(GameState, [], Counter, BMTMP, BMTMP).
@@ -188,7 +194,7 @@ choose_move([Board|Cubes], Player, 0, Move) :-
 % level 1 means it takes a greedy approach
 choose_move([Board|Cubes], Player, 1, Move) :-
     valid_moves(Board, 2, ListOfMoves),
-    get_best_move([Board|Cubes], ListOfMoves, 0, [], Move).
+    get_best_move([Board|Cubes], ListOfMoves, 0, 1-e:2-b, Move).
 
 
 
