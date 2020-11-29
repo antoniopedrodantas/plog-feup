@@ -23,13 +23,27 @@ manage_input(_Other) :-
 
 % prints main menu
 print_main_menu :-
-    write('Welcome to Nava \n'),
+
+    write('\n'),
+    write(' ________________________________ \n'),
+    write('|   ____    ____  __ __   ____   |\n'),
+    write('|  |    |  /    ||  |  | /    |  |\n'),
+    write('|  |  _  ||  o  ||  |  ||  o  |  |\n'),
+    write('|  |  |  ||     ||  |  ||     |  |\n'),
+    write('|  |  |  ||  _  ||  :  ||  _  |  |\n'),
+    write('|  |  |  ||  |  | |   / |  |  |  |\n'),
+    write('|  |__|__||__|__|  |_/  |__|__|  |\n'),
+    write('|________________________________|\n'),
+    write('\n\n'),
+
+    write('Welcome to Nava| \n\n'),
     write('1. Player vs. Player\n'),
-    write('2. Play vs. Computer\n\n'),
+    write('2. Player vs. Computer\n\n'),
     write('0. Exit\n\n'),
     write('Insert your option >').
 
 print_level_menu :-
+    write('\n'),
     write('Do you want a stroll in the park? Or do you want a challenge?\n'),
     write('0. Easy\n'),
     write('1. Hard\n\n'),
