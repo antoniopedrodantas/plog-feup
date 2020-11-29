@@ -142,9 +142,7 @@ move([Board|Cubes], Move, NewGameState) :-
     %now we just have to move the elemFinal to Position2 and change the ElemInitial to ElemRest
     move_piece(ElemFinal, 1, XF, YF, Board, [], NewBoardTmp),
     update_moved_piece(ElemRest, 1, XI, YI, NewBoardTmp, [], NewBoard),
-    %write('NewBoard: '), write(NewBoard), write('\n').
     make_new_game_state(NewBoard, Cubes, NewGameState).
-    %write(Board).
 
 % ------------------------------------------------------------ ai ------------------------------------------------        
 
@@ -172,7 +170,7 @@ value([Board|Cubes], Player, Value) :-
     
 
 % returns best of valid moves according to value function
-get_best_move(GameState, [], Counter, BMTMP, BMTMP) :- write('counter: '), write(Counter), write('\n').
+get_best_move(GameState, [], Counter, BMTMP, BMTMP).
 get_best_move(GameState, [Move|Tail], Counter, BMTMP, BestMove) :-
     move(GameState, Move, NewGameStateTmp),
     value(NewGameStateTmp, 2, NewValue),
@@ -180,17 +178,17 @@ get_best_move(GameState, [Move|Tail], Counter, BMTMP, BestMove) :-
         get_best_move(GameState, Tail, NewValue, Move, BestMove);
         get_best_move(GameState, Tail, Counter, BMTMP, BestMove).
 
+% level 0 means its random
+choose_move([Board|Cubes], Player, 0, Move) :-
+    valid_moves(Board, 2, ListOfMoves),
+    length(ListOfMoves, Length),
+    random(1, Length, Index),
+    nth1(Index, ListOfMoves, Move).
 
-get_ai_move(GameState, Level, ListOfMoves, NewGameState) :-
-    get_best_move(GameState, ListOfMoves, 0, [], BestMove),
-    move(GameState, BestMove, NewGameState).
-    %when its random
-    %value(GameState, 2, Value),
-    %write('Value: '), write(Value), write('\n'),
-    %length(ListOfMoves, Length),
-    %random(1, Length, Index),
-    %nth1(Index, ListOfMoves, Move),
-    %move(GameState, Move, NewGameState).
+% level 1 means it takes a greedy approach
+choose_move([Board|Cubes], Player, 1, Move) :-
+    valid_moves(Board, 2, ListOfMoves),
+    get_best_move([Board|Cubes], ListOfMoves, 0, [], Move).
 
 
 

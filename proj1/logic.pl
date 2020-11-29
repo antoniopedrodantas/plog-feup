@@ -11,21 +11,21 @@
 % starts game, first instantiates the board and then displays it
 
 %starts game for PvP
-start_game(1) :-
+start_game(1, Level) :-
     initial(InitialBoard),
-    display_game(InitialBoard, 1).
+    display_game(InitialBoard, 1, Level).
 
 %starts game for PvPC
-start_game(2) :-
+start_game(2, Level) :-
     initial(InitialBoard),
-    display_game(InitialBoard, 3).
+    display_game(InitialBoard, 3, Level).
 
 % initializes board
 % first element has board info
 % second element has remaining cubes info
 initial([
-    [[[empty], [empty], [empty], [empty], [empty]],
-    [[empty], [empty], [empty], [d-1,d-1], [empty]],
+    [[[empty], [empty], [empty], [empty], [d-1, d-1, d-1, d-1, d-1, d-1]],
+    [[empty], [empty], [empty], [empty], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
     [[empty], [empty], [empty], [empty], [empty]],
     [[d-2, d-2, d-2, d-2, d-2, d-2], [empty], [empty], [empty], [empty]]],
@@ -37,7 +37,7 @@ initial([
 % -----------------------------------------------------------------------------------------
 
 % displays board for player 1
-display_game([Board|Cubes], 1) :-
+display_game([Board|Cubes], 1, Level) :-
     write('\n\n'),
     write('   a   b   c   d   e   \n'),
     write('   |   |   |   |   |   \n'),
@@ -53,10 +53,10 @@ display_game([Board|Cubes], 1) :-
     write('\n\n'),
     get_players_move([Board|Cubes], ListOfMoves, NewGameState),
     game_over(NewGameState, Winner),
-    end_game(Winner, 1, NewGameState).
+    end_game(Winner, 1, NewGameState, Level).
 
 % displays board for player 2
-display_game([Board|Cubes], 2) :-
+display_game([Board|Cubes], 2, Level) :-
     write('\n\n'),
     write('   a   b   c   d   e   \n'),
     write('   |   |   |   |   |   \n'),
@@ -71,14 +71,14 @@ display_game([Board|Cubes], 2) :-
     write('\n\n'),
     get_players_move([Board|Cubes], ListOfMoves, NewGameState),
     game_over(NewGameState, Winner),
-    end_game(Winner, 2, NewGameState).
+    end_game(Winner, 2, NewGameState, Level).
 
 % -----------------------------------------------------------------------------------------
 % --------------------------------- Player vs Computer ------------------------------------
 % -----------------------------------------------------------------------------------------
 
 % displays board for player 1 when he comes against the PC
-display_game([Board|Cubes], 3) :-
+display_game([Board|Cubes], 3, Level) :-
     write('\n\n'),
     write('   a   b   c   d   e   \n'),
     write('   |   |   |   |   |   \n'),
@@ -94,11 +94,10 @@ display_game([Board|Cubes], 3) :-
     write('\n\n'),
     get_players_move([Board|Cubes], ListOfMoves, NewGameState),
     game_over(NewGameState, Winner),
-    write('Winner: '), write(Winner), write('\n'),
-    end_game(Winner, 3, NewGameState).
+    end_game(Winner, 3, NewGameState, Level).
 
 % displays board for player 1 when he comes against the PC
-display_game([Board|Cubes], 4) :-
+display_game([Board|Cubes], 4, Level) :-
     write('\n\n'),
     write('   a   b   c   d   e   \n'),
     write('   |   |   |   |   |   \n'),
@@ -111,10 +110,12 @@ display_game([Board|Cubes], 4) :-
     write('[Valid Moves]: '),
     write(ListOfMoves),
     write('\n\n'),
-    get_ai_move([Board|Cubes], ListOfMoves, NewGameState),
+    %get_ai_move([Board|Cubes], Level, ListOfMoves, NewGameState),
+    choose_move([Board|Cubes], 4, Level, Move),
+    move([Board|Cubes], Move, NewGameState),
+    write('Computer Moved: '), write(Move), write('\n'),
     game_over(NewGameState, Winner),
-    write('Winner: '), write(Winner), write('\n'),
-    end_game(Winner, 4, NewGameState).
+    end_game(Winner, 4, NewGameState, Level).
     %get_players_move([Board|Cubes], ListOfMoves, NewGameState).
     % have isGameOver here !
     %write('NewGameState: '), write(NewGameState), write('\n').
@@ -317,17 +318,17 @@ get_smaller_list(ListOfMoves1, ListOfMoves2, SmallerList, PF) :-
 
 % if there is a winner, ends game and states the winner, else continues game
 % end_game(+Winner, +Player, +GameState)
-end_game(0, 1, NewGameState) :- display_game(NewGameState, 2).
-end_game(0, 2, NewGameState) :- display_game(NewGameState, 1).
-end_game(0, 3, NewGameState) :- display_game(NewGameState, 4).
-end_game(0, 4, NewGameState) :- display_game(NewGameState, 3).
+end_game(0, 1, NewGameState, Level) :- display_game(NewGameState, 2, Level).
+end_game(0, 2, NewGameState, Level) :- display_game(NewGameState, 1, Level).
+end_game(0, 3, NewGameState, Level) :- display_game(NewGameState, 4, Level).
+end_game(0, 4, NewGameState, Level) :- display_game(NewGameState, 3, Level).
 
-end_game(1, 1, NewGameState) :- write('\nPlayer 1 wins the game ! :D \n\n').
-end_game(1, 2, NewGameState) :- write('\nPlayer 1 wins the game ! :D \n\n').
-end_game(2, 1, NewGameState) :- write('\nPlayer 2 wins the game ! :D \n\n').
-end_game(2, 2, NewGameState) :- write('\nPlayer 2 wins the game ! :D \n\n').
+end_game(1, 1, NewGameState, Level) :- write('\nPlayer 1 wins the game ! :D \n\n').
+end_game(1, 2, NewGameState, Level) :- write('\nPlayer 1 wins the game ! :D \n\n').
+end_game(2, 1, NewGameState, Level) :- write('\nPlayer 2 wins the game ! :D \n\n').
+end_game(2, 2, NewGameState, Level) :- write('\nPlayer 2 wins the game ! :D \n\n').
 
-end_game(1, 3, NewGameState) :- write('\nYou won the game ! :D \n\n').
-end_game(1, 4, NewGameState) :- write('\nYou won the game ! :D \n\n').
-end_game(2, 3, NewGameState) :- write('\nComputer won the game ! D: \n\n').
-end_game(2, 4, NewGameState) :- write('\nComputer won the game ! D: \n\n').
+end_game(1, 3, NewGameState, Level) :- write('\nYou won the game ! :D \n\n').
+end_game(1, 4, NewGameState, Level) :- write('\nYou won the game ! :D \n\n').
+end_game(2, 3, NewGameState, Level) :- write('\nComputer won the game ! D: \n\n').
+end_game(2, 4, NewGameState, Level) :- write('\nComputer won the game ! D: \n\n').
