@@ -110,7 +110,7 @@ display_game([Board|Cubes], 4, Level) :-
     write('[Valid Moves]: '),
     write(ListOfMoves),
     write('\n\n'),
-    %get_ai_move([Board|Cubes], Level, ListOfMoves, NewGameState),
+    %choose_move([Board|Cubes], Level, ListOfMoves, NewGameState),
     choose_move([Board|Cubes], 4, Level, Move),
     move([Board|Cubes], Move, NewGameState),
     write('Computer Moved: '), write(Move), write('\n'),
@@ -258,7 +258,7 @@ get_coordinates(Position, X, Y) :-
     Y is Col - 96.
 
 % this func will probably be used to get the valid moves for each piece
-% get_pieces(+Positions, +PiecesAux, -Pieces).
+% get_pieces(+Board, +Positions, +PiecesAux, -Pieces).
 get_pieces(Board, [], PiecesAux, PiecesAux).
 get_pieces(Board, Positions, PiecesAux, Pieces) :-
     first(Positions, Position, Tail),
