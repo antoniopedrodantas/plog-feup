@@ -4,7 +4,6 @@
 % TODO:
 % -----> Descobrir como se faz com os quadrados pretos
 % -----> Adicionar mais niveis
-% -----> Fazer menu inicial e deixar a pessoa escolher o tabuleiro.
 
 % ------------------------ Tricky Triple Logic ------------------------
 
