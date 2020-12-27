@@ -1,9 +1,27 @@
 :- use_module(library(clpfd)).
 :- use_module(library(lists)).
+:- use_module(library(between)).
 
 % TODO:
 % -----> Descobrir como se faz com os quadrados pretos
 % -----> Adicionar mais niveis
+
+% ------------------------ Some Board ------------------------
+
+boardOne([
+    [_, _, 1, _],
+    [2, _, 1, _],
+    [_, _, _, 2],
+    [_, 2, _, 3]
+]).
+
+boardTwo([
+    [_, _, 1, _, _],
+    [2, _, 1, _, _],
+    [_, _, _, 2, _],
+    [_, 2, _, 3, _],
+    [_, 2, _, 3, _]]
+).
 
 % ------------------------ Tricky Triple Logic ------------------------
 
@@ -16,9 +34,79 @@ condition(A, B, C) :-
     A #= C,
     A #\= B.
 
+
 condition(A, B, C) :-
     B #= C,
     A #\= C.
+
+% % ------------------------ New Functions ------------------------
+
+applyHorizontalConstraints(Board, Size, Length, Length, Column, Size).
+applyHorizontalConstraints(Board, Size, Length, Row, Column, Size) :-
+    NewRow is Row + 1,
+    applyHorizontalConstraints(Board, Size, Length, NewRow, 1, 3).
+applyHorizontalConstraints(Board, Size, Length, Row, Column, Max) :-
+    % gets first element
+    FirstIndex is Row * Column,
+    nth1(FirstIndex, Board, Elem),
+    % gets second element
+    ColumnTwo is Column + 1,
+    SecondIndex is Row * ColumnTwo,
+    nth1(SecondIndex, Board, ElemTwo),
+    % gets third element
+    ColumnThree is Column + 2,
+    ThirdIndex is Row * ColumnThree,
+    nth1(ThirdIndex, Board, ElemThree),
+    % restricts values
+    condition(Elem, ElemTwo, ElemThree),
+    % recursive calls
+    NewMax is Max + 1,
+    NewColumn is Column + 1,
+    applyHorizontalConstraints(Board, Size, Length, Row, NewColumn, NewMax).
+
+applyVerticalConstraints(Board, Size, Length, Row, Length, Size).
+applyVerticalConstraints(Board, Size, Length, Row, Column, Size) :-
+    NewColumn is Column + 1,
+    applyVerticalConstraints(Board, Size, Length, 1, NewColumn, 3).
+applyVerticalConstraints(Board, Size, Length, Row, Column, Max) :-
+    % gets first element
+    DecRow is Row - 1,
+    AuxNumber is DecRow * 4,
+    FirstIndex is Column + AuxNumber,
+    nth1(FirstIndex, Board, Elem),
+    % gets second element
+    AuxNumberTwo is Row * 4,
+    SecondIndex is Column + AuxNumberTwo,
+    nth1(SecondIndex, Board, ElemTwo),
+    % gets third element
+    DecRowThree is Row + 1,
+    AuxNumberThree is DecRowThree * 4,
+    ThirdIndex is Column + AuxNumberThree,
+    nth1(ThirdIndex, Board, ElemThree),
+    % restricts values
+    condition(Elem, ElemTwo, ElemThree),
+    % recursive calls
+    NewMax is Max + 1,
+    NewRow is Row + 1,
+    applyVerticalConstraints(Board, Size, Length, NewRow, Column, NewMax).
+
+
+solveRecursively :-
+    % chooses Board
+    boardOne(Board),
+    % gets length and size 
+    length(Board, Length),
+    Size is Length + 1,
+    % gets all variables
+    append(Board, FlatBoard),
+    domain(FlatBoard, 1, 3),
+    % applies constraints
+    applyHorizontalConstraints(FlatBoard, Size, Length, 1, 1, 3),
+    applyVerticalConstraints(FlatBoard, Size, Length, 1, 1, 3),
+    % labels variables
+    labeling([], FlatBoard),
+    % writes final board
+    write(FlatBoard).
 
 % ------------------------ Easy Mode (4x4) ------------------------
 
@@ -53,7 +141,7 @@ solveTrickyTriple(1) :-
     condition(B3, C3, D3),
     condition(A4, B4, C4),
     condition(B4, C4, D4),
-    % Horizontals
+    % Diagonal
     condition(A1, B2, C3),
     condition(A2, B3, C4),
     condition(A3, B2, C1),
@@ -63,6 +151,7 @@ solveTrickyTriple(1) :-
     condition(B3, C2, D1),
     condition(B4, C3, D2),
     % labels variables
+    % labeling options : [], [ff], [ffc], [middle] 
     labeling([], Vars),
     % writes solution
     write('Solution: \n'),
