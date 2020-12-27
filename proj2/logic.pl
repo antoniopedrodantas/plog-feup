@@ -46,16 +46,19 @@ applyHorizontalConstraints(Board, Size, Length, Row, Column, Size) :-
     NewRow is Row + 1,
     applyHorizontalConstraints(Board, Size, Length, NewRow, 1, 3).
 applyHorizontalConstraints(Board, Size, Length, Row, Column, Max) :-
+    % aux calculous
+    AuxRow is Row - 1,
+    AuxNumber is AuxRow * 4,
     % gets first element
-    FirstIndex is Row * Column,
+    FirstIndex is Column + AuxNumber,
     nth1(FirstIndex, Board, Elem),
     % gets second element
     ColumnTwo is Column + 1,
-    SecondIndex is Row * ColumnTwo,
+    SecondIndex is ColumnTwo + AuxNumber,
     nth1(SecondIndex, Board, ElemTwo),
     % gets third element
     ColumnThree is Column + 2,
-    ThirdIndex is Row * ColumnThree,
+    ThirdIndex is ColumnThree + AuxNumber,
     nth1(ThirdIndex, Board, ElemThree),
     % restricts values
     condition(Elem, ElemTwo, ElemThree),
@@ -93,7 +96,7 @@ applyVerticalConstraints(Board, Size, Length, Row, Column, Max) :-
 
 solveRecursively :-
     % chooses Board
-    boardOne(Board),
+    boardTwo(Board),
     % gets length and size 
     length(Board, Length),
     Size is Length + 1,
@@ -106,7 +109,21 @@ solveRecursively :-
     % labels variables
     labeling([], FlatBoard),
     % writes final board
-    write(FlatBoard).
+    displayBoard(FlatBoard, Size, Length, 1, 1).
+
+displayBoard(FlatBoard, Size, Length, Length, Size).
+displayBoard(FlatBoard, Size, Length, Row, Size) :-
+    write('\n'),
+    NewRow is Row + 1,
+    displayBoard(FlatBoard, Size, Length, NewRow, 1).
+displayBoard(FlatBoard, Size, Length, Row, Column) :-
+    AuxRow is Row - 1,
+    AuxNumber is AuxRow * 4,
+    Index is Column + AuxNumber,
+    nth1(Index, FlatBoard, Elem),
+    write(Elem), write(' '),
+    NewColumn is Column + 1,
+    displayBoard(FlatBoard, Size, Length, Row, NewColumn).
 
 % ------------------------ Easy Mode (4x4) ------------------------
 
