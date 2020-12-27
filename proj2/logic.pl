@@ -15,15 +15,38 @@ boardOne([
     [_, 2, _, 3]
 ]).
 
+boardThree([
+    [1, _, 3, _],
+    [_, _, _, _],
+    [2, _, 3, 1],
+    [_, _, 2, _]
+]).
+
 boardTwo([
     [_, _, 1, _, _],
     [2, _, 1, _, _],
     [_, _, _, 2, _],
     [_, 2, _, 3, _],
-    [_, 2, _, 3, _]]
-).
+    [_, 2, _, 3, _]
+]).
 
-% ------------------------ Tricky Triple Logic ------------------------
+boardTest1([
+    [01, 02, 03, 04],
+    [05, 06, 07, 08],
+    [09, 10, 11, 12],
+    [13, 14, 15, 16]
+]).
+
+boardTest2([
+    [01, 02, 03, 04, 05, 06],
+    [07, 08, 09, 10, 11, 12],
+    [13, 14, 15, 16, 17, 18],
+    [19, 20, 21, 22, 23, 24],
+    [25, 26, 27, 28, 29, 30],
+    [31, 32, 33, 34, 35, 36]
+]).
+
+% ------------------------ Tricky Triple Restriction ------------------------
 
 % Possible 3 square layout
 condition(A, B, C) :-
@@ -39,7 +62,7 @@ condition(A, B, C) :-
     B #= C,
     A #\= C.
 
-% ------------------------ New Functions ------------------------
+% ------------------------ Horizontal Constraint ------------------------
 
 applyHorizontalConstraints(Board, Size, Length, Length, Column, Size).
 applyHorizontalConstraints(Board, Size, Length, Row, Column, Size) :-
@@ -48,7 +71,7 @@ applyHorizontalConstraints(Board, Size, Length, Row, Column, Size) :-
 applyHorizontalConstraints(Board, Size, Length, Row, Column, Max) :-
     % aux calculous
     AuxRow is Row - 1,
-    AuxNumber is AuxRow * 4,
+    AuxNumber is AuxRow * Length,
     % gets first element
     FirstIndex is Column + AuxNumber,
     nth1(FirstIndex, Board, Elem),
@@ -67,6 +90,8 @@ applyHorizontalConstraints(Board, Size, Length, Row, Column, Max) :-
     NewColumn is Column + 1,
     applyHorizontalConstraints(Board, Size, Length, Row, NewColumn, NewMax).
 
+% ------------------------ Vertical Constraint ------------------------
+
 applyVerticalConstraints(Board, Size, Length, Row, Length, Size).
 applyVerticalConstraints(Board, Size, Length, Row, Column, Size) :-
     NewColumn is Column + 1,
@@ -74,16 +99,16 @@ applyVerticalConstraints(Board, Size, Length, Row, Column, Size) :-
 applyVerticalConstraints(Board, Size, Length, Row, Column, Max) :-
     % gets first element
     DecRow is Row - 1,
-    AuxNumber is DecRow * 4,
+    AuxNumber is DecRow * Length,
     FirstIndex is Column + AuxNumber,
     nth1(FirstIndex, Board, Elem),
     % gets second element
-    AuxNumberTwo is Row * 4,
+    AuxNumberTwo is Row * Length,
     SecondIndex is Column + AuxNumberTwo,
     nth1(SecondIndex, Board, ElemTwo),
     % gets third element
     DecRowThree is Row + 1,
-    AuxNumberThree is DecRowThree * 4,
+    AuxNumberThree is DecRowThree * Length,
     ThirdIndex is Column + AuxNumberThree,
     nth1(ThirdIndex, Board, ElemThree),
     % restricts values
@@ -93,10 +118,81 @@ applyVerticalConstraints(Board, Size, Length, Row, Column, Max) :-
     NewRow is Row + 1,
     applyVerticalConstraints(Board, Size, Length, NewRow, Column, NewMax).
 
+% ------------------------ Diagonal Constraints ------------------------
+% ------------------------ Right Constraint ------------------------
+
+applyDiagonalRightConstraint(Board, Size, Length, Row, Column, Size, Length).
+applyDiagonalRightConstraint(Board, Size, Length, Row, Column, Size, MaxV) :-
+    NewRow is Row + 1,
+    NewMaxV is MaxV + 1,
+    applyDiagonalRightConstraint(Board, Size, Length, NewRow, 1, 3, NewMaxV).
+applyDiagonalRightConstraint(Board, Size, Length, Row, Column, MaxH, MaxV) :-
+    % gets first element
+    AuxRow is Row - 1,
+    AuxNumber is AuxRow * Length,
+    Index is Column + AuxNumber,
+    nth1(Index, Board, Elem),
+    % gets second element
+    RowTwo is Row + 1,
+    AuxRowTwo is RowTwo - 1,
+    AuxNumberTwo is AuxRowTwo * Length,
+    ColumnTwo is Column + 1,
+    IndexTwo is ColumnTwo + AuxNumberTwo,
+    nth1(IndexTwo, Board, ElemTwo),
+    % gets third element
+    RowThree is Row + 2,
+    AuxRowThree is RowThree - 1,
+    AuxNumberThree is AuxRowThree * Length,
+    ColumnThree is Column + 2,
+    IndexThree is ColumnThree + AuxNumberThree,
+    nth1(IndexThree, Board, ElemThree),
+    % restricts values
+    condition(Elem, ElemTwo, ElemThree),
+    % recursive calls
+    NewMaxH is MaxH + 1,
+    NewColumn is Column + 1,
+    applyDiagonalRightConstraint(Board, Size, Length, Row, NewColumn, NewMaxH, MaxV).
+
+% ------------------------ Left Constraint ------------------------
+
+applyDiagonalLeftConstraint(Board, Size, Length, Row, Column, 0, Length).
+applyDiagonalLeftConstraint(Board, Size, Length, Row, Column, 0, MaxV) :-
+    NewRow is Row + 1,
+    NewMaxV is MaxV + 1,
+    MaxH is Size - 3,
+    applyDiagonalLeftConstraint(Board, Size, Length, NewRow, Length, MaxH, NewMaxV).
+applyDiagonalLeftConstraint(Board, Size, Length, Row, Column, MaxH, MaxV) :-
+    % gets first element
+    AuxRow is Row - 1,
+    AuxNumber is AuxRow * Length,
+    Index is Column + AuxNumber,
+    nth1(Index, Board, Elem),
+    % gets second element
+    RowTwo is Row + 1,
+    AuxRowTwo is RowTwo - 1,
+    AuxNumberTwo is AuxRowTwo * Length,
+    ColumnTwo is Column - 1,
+    IndexTwo is ColumnTwo + AuxNumberTwo,
+    nth1(IndexTwo, Board, ElemTwo),
+    % gets third element
+    RowThree is Row + 2,
+    AuxRowThree is RowThree - 1,
+    AuxNumberThree is AuxRowThree * Length,
+    ColumnThree is Column - 2,
+    IndexThree is ColumnThree + AuxNumberThree,
+    nth1(IndexThree, Board, ElemThree),
+    % restricts values
+    condition(Elem, ElemTwo, ElemThree),
+    % recursive calls
+    NewMaxH is MaxH - 1,
+    NewColumn is Column - 1,
+    applyDiagonalLeftConstraint(Board, Size, Length, Row, NewColumn, NewMaxH, MaxV).
+
+% ------------------------ Solving Function ------------------------
 
 solveRecursively :-
     % chooses Board
-    boardTwo(Board),
+    boardThree(Board),
     % gets length and size 
     length(Board, Length),
     Size is Length + 1,
@@ -106,10 +202,15 @@ solveRecursively :-
     % applies constraints
     applyHorizontalConstraints(FlatBoard, Size, Length, 1, 1, 3),
     applyVerticalConstraints(FlatBoard, Size, Length, 1, 1, 3),
+    applyDiagonalRightConstraint(FlatBoard, Size, Length, 1, 1, 3, 3),
+    MaxH is Size - 3,
+    applyDiagonalLeftConstraint(FlatBoard, Size, Length, 1, Length, MaxH, 3),
     % labels variables
     labeling([], FlatBoard),
     % writes final board
     displayBoard(FlatBoard, Size, Length, 1, 1).
+
+% ------------------------ Final Board Display ------------------------
 
 displayBoard(FlatBoard, Size, Length, Length, Size).
 displayBoard(FlatBoard, Size, Length, Row, Size) :-
@@ -118,11 +219,9 @@ displayBoard(FlatBoard, Size, Length, Row, Size) :-
     displayBoard(FlatBoard, Size, Length, NewRow, 1).
 displayBoard(FlatBoard, Size, Length, Row, Column) :-
     AuxRow is Row - 1,
-    AuxNumber is AuxRow * 4,
+    AuxNumber is AuxRow * Length,
     Index is Column + AuxNumber,
     nth1(Index, FlatBoard, Elem),
     write(Elem), write(' '),
     NewColumn is Column + 1,
     displayBoard(FlatBoard, Size, Length, Row, NewColumn).
-
-
