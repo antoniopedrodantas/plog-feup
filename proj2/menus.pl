@@ -58,13 +58,13 @@ manage_input(_Other) :-
 print_level_easy :-
     write('Here are some easy level puzzles. Which one do you want to see the solution to?\n'),
     write('1.                2.                3. \n'),
-    write(' --- ---1--- '), write('     '), write('1--- ---3--- '), write('     '), write('2---2--- --- '), write('\n'),
+    write(' --- ---1--- '), write('     '), write('1--- ---3--- '), write('     '), write('2---1--- --- '), write('\n'),
     write('|   |   |   |'), write('     '), write('|   |   |   |'), write('     '), write('|   |   |   |'), write('\n'),
-    write('2--- ---1--- '), write('     '), write(' --- --- --- '), write('     '), write(' --- --- --- '), write('\n'),
+    write('2--- ---1--- '), write('     '), write(' --- --- --- '), write('     '), write(' ---3--- ---3'), write('\n'),
     write('|   |   |   |'), write('     '), write('|   |   |   |'), write('     '), write('|   |   |   |'), write('\n'),
-    write(' --- --- ---2'), write('     '), write('2--- ---3---1'), write('     '), write('3--- --- ---1'), write('\n'),
+    write(' --- --- ---2'), write('     '), write('2--- ---3---1'), write('     '), write(' --- --- ---3'), write('\n'),
     write('|   |   |   |'), write('     '), write('|   |   |   |'), write('     '), write('|   |   |   |'), write('\n'),
-    write(' ---2--- ---3'), write('     '), write(' --- ---2--- '), write('     '), write(' ---3---1--- '), write('\n\n'),
+    write(' ---2--- ---3'), write('     '), write(' --- ---2--- '), write('     '), write('2--- --- --- '), write('\n\n'),
     write('Insert your option > ').
 
 % medium menu
@@ -77,11 +77,17 @@ print_level_hard :-
 
 % manage level easy option
 manage_level_easy_input(1) :-
-    solveTrickyTriple(1).
+    %solveTrickyTriple(1).
+    boardOne(Board),
+    solveRecursively(Board).
 manage_level_easy_input(2) :-
-    solveTrickyTriple(2).
+    boardTwo(Board),
+    solveRecursively(Board).
+    %solveTrickyTriple(2).
 manage_level_easy_input(3) :-
-    solveTrickyTriple(3).
+    boardThree(Board),
+    solveRecursively(Board).
+    %solveTrickyTriple(3).
 manage_level_easy_input(_Other) :-
     write('\nERROR: that option does not exist.\n\n'),
     main_menu.

@@ -6,46 +6,6 @@
 % -----> Descobrir como se faz com os quadrados pretos
 % -----> Adicionar mais niveis
 
-% ------------------------ Some Board ------------------------
-
-boardOne([
-    [_, _, 1, _],
-    [2, _, 1, _],
-    [_, _, _, 2],
-    [_, 2, _, 3]
-]).
-
-boardThree([
-    [1, _, 3, _],
-    [_, _, _, _],
-    [2, _, 3, 1],
-    [_, _, 2, _]
-]).
-
-boardTwo([
-    [_, _, 1, _, _],
-    [2, _, 1, _, _],
-    [_, _, _, 2, _],
-    [_, 2, _, 3, _],
-    [_, 2, _, 3, _]
-]).
-
-boardTest1([
-    [01, 02, 03, 04],
-    [05, 06, 07, 08],
-    [09, 10, 11, 12],
-    [13, 14, 15, 16]
-]).
-
-boardTest2([
-    [01, 02, 03, 04, 05, 06],
-    [07, 08, 09, 10, 11, 12],
-    [13, 14, 15, 16, 17, 18],
-    [19, 20, 21, 22, 23, 24],
-    [25, 26, 27, 28, 29, 30],
-    [31, 32, 33, 34, 35, 36]
-]).
-
 % ------------------------ Tricky Triple Restriction ------------------------
 
 % Possible 3 square layout
@@ -56,7 +16,6 @@ condition(A, B, C) :-
 condition(A, B, C) :-
     A #= C,
     A #\= B.
-
 
 condition(A, B, C) :-
     B #= C,
@@ -190,9 +149,7 @@ applyDiagonalLeftConstraint(Board, Size, Length, Row, Column, MaxH, MaxV) :-
 
 % ------------------------ Solving Function ------------------------
 
-solveRecursively :-
-    % chooses Board
-    boardThree(Board),
+solveRecursively(Board) :-
     % gets length and size 
     length(Board, Length),
     Size is Length + 1,
@@ -208,20 +165,34 @@ solveRecursively :-
     % labels variables
     labeling([], FlatBoard),
     % writes final board
-    displayBoard(FlatBoard, Size, Length, 1, 1).
+    displaySolution(FlatBoard, Size, Length, 1, 1).
 
 % ------------------------ Final Board Display ------------------------
 
+displaySolution(Board, Size, Length, Row, Column) :-
+    write('\nSolution: \n'),
+    displayBoard(Board, Size, Length, Row, Column),
+    write('\n').
+
 displayBoard(FlatBoard, Size, Length, Length, Size).
 displayBoard(FlatBoard, Size, Length, Row, Size) :-
-    write('\n'),
+    write('\n|   |   |   |   \n'),
     NewRow is Row + 1,
     displayBoard(FlatBoard, Size, Length, NewRow, 1).
+displayBoard(FlatBoard, Size, Length, Row, Column) :-
+    Column = Length,
+    AuxRow is Row - 1,
+    AuxNumber is AuxRow * Length,
+    Index is Column + AuxNumber,
+    nth1(Index, FlatBoard, Elem),
+    write(Elem),
+    NewColumn is Column + 1,
+    displayBoard(FlatBoard, Size, Length, Row, NewColumn).
 displayBoard(FlatBoard, Size, Length, Row, Column) :-
     AuxRow is Row - 1,
     AuxNumber is AuxRow * Length,
     Index is Column + AuxNumber,
     nth1(Index, FlatBoard, Elem),
-    write(Elem), write(' '),
+    write(Elem), write('---'),
     NewColumn is Column + 1,
     displayBoard(FlatBoard, Size, Length, Row, NewColumn).
