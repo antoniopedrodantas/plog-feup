@@ -69,8 +69,18 @@ print_level_easy :-
 
 % medium menu
 print_level_medium :-
-    write('TODO: Display these levels\n'),
-    write('Insert [1,2] >').
+    write('Here are some mediym level puzzles. Which one do you want to see the solution to?\n'),
+    write('1.                    2.                    3. \n'),
+    write('1--- --- ---2---3'), write('     '), write(' ---2--- ---1--- '), write('     '), write(' --- ---2--- ---2'), write('\n'),
+    write('|   |   |   |   |'), write('     '), write('|   |   |   |   |'), write('     '), write('|   |   |   |   |'), write('\n'),
+    write(' --- --- --- ---1'), write('     '), write(' --- --- --- --- '), write('     '), write(' ---1--- --- --- '), write('\n'),
+    write('|   |   |   |   |'), write('     '), write('|   |   |   |   |'), write('     '), write('|   |   |   |   |'), write('\n'),
+    write(' --- --- --- --- '), write('     '), write('1--- --- --- ---2'), write('     '), write(' ---1---0--- ---3'), write('\n'),
+    write('|   |   |   |   |'), write('     '), write('|   |   |   |   |'), write('     '), write('|   |   |   |   |'), write('\n'),
+    write('1--- --- --- ---2'), write('     '), write(' --- ---0--- --- '), write('     '), write('1--- ---3---1--- '), write('\n'),
+    write('|   |   |   |   |'), write('     '), write('|   |   |   |   |'), write('     '), write('|   |   |   |   |'), write('\n'),
+    write(' --- ---1--- --- '), write('     '), write('3---2--- ---3---1'), write('     '), write(' --- --- --- --- '), write('\n\n'),
+    write('Insert your option >').
 
 % hard menu
 print_level_hard :-
@@ -90,8 +100,7 @@ manage_level_easy_input(3) :-
     solveRecursively(Board).
     %solveTrickyTriple(3).
 manage_level_easy_input(_Other) :-
-    write('\nERROR: that option does not exist.\n\n'),
-    main_menu.
+    write('\nERROR: that option does not exist.\n\n').
 
 % manage level medium option
 manage_level_medium_input(1) :-
@@ -104,8 +113,7 @@ manage_level_medium_input(3) :-
     boardNine(Board),
     solveRecursively(Board).
 manage_level_medium_input(_Other) :-
-    write('\nERROR: that level is not valid.\n\n'),
-    main_menu.
+    write('\nERROR: that option does not exist.\n\n').
 
 % manage level hard option
 manage_level_hard_input(1) :-
@@ -115,5 +123,4 @@ manage_level_hard_input(2) :-
 manage_level_hard_input(3) :-
     solveTrickyTriple(9).
 manage_level_hard_input(_Other) :-
-    write('\nERROR: that option does not exist.\n\n'),
-    main_menu.
+    write('\nERROR: that option does not exist.\n\n').
