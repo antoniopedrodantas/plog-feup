@@ -84,7 +84,7 @@ print_level_medium :-
 
 % hard menu
 print_level_hard :-
-    write('Not yet implemented :(').
+    write('Insert your option >').
 
 % manage level easy option
 manage_level_easy_input(1) :-
@@ -104,23 +104,26 @@ manage_level_easy_input(_Other) :-
 
 % manage level medium option
 manage_level_medium_input(1) :-
-    boardSeven(Board),
+    boardFour(Board),
     solveRecursively(Board).
 manage_level_medium_input(2) :-
-    boardEight(Board),
+    boardFive(Board),
     solveRecursively(Board).
 manage_level_medium_input(3) :-
-    boardNine(Board),
+    boardSix(Board),
     solveRecursively(Board).
 manage_level_medium_input(_Other) :-
     write('\nERROR: that option does not exist.\n\n').
 
 % manage level hard option
 manage_level_hard_input(1) :-
-    solveTrickyTriple(7).
+    boardSeven(Board),
+    solveRecursively(Board).
 manage_level_hard_input(2) :-
-    solveTrickyTriple(8).
+    boardEight(Board),
+    solveRecursively(Board).
 manage_level_hard_input(3) :-
-    solveTrickyTriple(9).
+    boardNine(Board),
+    solveRecursively(Board).
 manage_level_hard_input(_Other) :-
     write('\nERROR: that option does not exist.\n\n').
