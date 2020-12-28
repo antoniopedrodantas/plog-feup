@@ -101,7 +101,8 @@ manage_level_medium_input(2) :-
     boardEight(Board),
     solveRecursively(Board).
 manage_level_medium_input(3) :-
-    solveTrickyTriple(6).
+    boardNine(Board),
+    solveRecursively(Board).
 manage_level_medium_input(_Other) :-
     write('\nERROR: that level is not valid.\n\n'),
     main_menu.

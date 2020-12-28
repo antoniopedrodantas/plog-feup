@@ -21,6 +21,23 @@ condition(A, B, C) :-
     B #= C,
     A #\= C.
 
+condition(0, B, C) :-
+    B #\= 0,
+    C #\= 0.
+condition(A, 0, C) :-
+    A #\= 0,
+    C #\= 0.
+condition(A, B, 0) :-
+    A #\= 0,
+    B #\= 0.
+condition(0, 0, C) :-
+    C #\= 0.
+condition(A, 0, 0) :-
+    A #\= 0.
+condition(0, B, 0) :-
+    B #\= 0.
+
+
 % ------------------------ Horizontal Constraint ------------------------
 
 applyHorizontalConstraints(Board, Size, Length, Length, Column, Size).
@@ -149,13 +166,24 @@ applyDiagonalLeftConstraint(Board, Size, Length, Row, Column, MaxH, MaxV) :-
 
 % ------------------------ Solving Function ------------------------
 
+getZeroCounter(FlatBoard, Length, Length, CounterTmp, CounterTmp).
+getZeroCounter(FlatBoard, Length, Index, CounterTmp, Counter) :-
+    nth1(Index, FlatBoard, Elem),
+    Elem == 0 ->
+        NewIndex is Index + 1, NewCounterTmp is CounterTmp + 1, getZeroCounter(FlatBoard, Length, NewIndex, NewCounterTmp, Counter);
+        NewIndex is Index + 1, getZeroCounter(FlatBoard, Length, NewIndex, CounterTmp, Counter).
+
 solveRecursively(Board) :-
     % gets length and size 
     length(Board, Length),
     Size is Length + 1,
     % gets all variables
     append(Board, FlatBoard),
-    domain(FlatBoard, 1, 3),
+    length(FlatBoard, FlatLength),
+    FlatSize is FlatLength + 1,
+    getZeroCounter(FlatBoard, FlatSize, 1, 0, Counter),
+    domain(FlatBoard, 0, 3),
+    global_cardinality(FlatBoard, [0-Counter, 1-_, 2-_, 3-_]),
     % applies constraints
     applyHorizontalConstraints(FlatBoard, Size, Length, 1, 1, 3),
     applyVerticalConstraints(FlatBoard, Size, Length, 1, 1, 3),
