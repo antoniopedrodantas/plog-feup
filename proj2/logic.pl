@@ -176,7 +176,9 @@ displaySolution(Board, Size, Length, Row, Column) :-
 
 displayBoard(FlatBoard, Size, Length, Length, Size).
 displayBoard(FlatBoard, Size, Length, Row, Size) :-
-    write('\n|   |   |   |   \n'),
+    write('\n'),
+    displayWalls(Length, 0),
+    write('\n'),
     NewRow is Row + 1,
     displayBoard(FlatBoard, Size, Length, NewRow, 1).
 displayBoard(FlatBoard, Size, Length, Row, Column) :-
@@ -196,3 +198,9 @@ displayBoard(FlatBoard, Size, Length, Row, Column) :-
     write(Elem), write('---'),
     NewColumn is Column + 1,
     displayBoard(FlatBoard, Size, Length, Row, NewColumn).
+
+displayWalls(Length, Length).
+displayWalls(Length, Counter) :-
+    write('|   '),
+    NewCounter is Counter + 1,
+    displayWalls(Length, NewCounter).
