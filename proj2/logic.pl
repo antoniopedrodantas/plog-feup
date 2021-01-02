@@ -191,7 +191,7 @@ solveRecursively(Board) :-
     MaxH is Size - 3,
     applyDiagonalLeftConstraint(FlatBoard, Size, Length, 1, Length, MaxH, 3),
     % labels variables
-    labeling([ffc], FlatBoard),
+    labeling([], FlatBoard),
     % writes final board
     displaySolution(FlatBoard, Size, Length, 1, 1).
 
