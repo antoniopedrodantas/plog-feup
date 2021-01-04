@@ -5,4 +5,4 @@
 ### Execution Instructions
 
 1. Go on SICStus and consult the file 'trickyTriple.pl'
-2. Type *trickyTriple.* and the game should execute
+2. Type *trickyTriple.* and the game should start
