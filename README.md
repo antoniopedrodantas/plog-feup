@@ -4,10 +4,10 @@ This repository contains both projects for the Logic Programming course @ FEUP. 
 
 ## Nava
 
-For our first project we develop a replication of the board game __Nava__. You can consult its rules [here](https://drive.google.com/file/d/1qfZp_uDWRPxPU5U2lN-EGNDfEHkjha1u/view).
+For our first project we developed a replication of the board game __Nava__. You can consult its rules [here](https://drive.google.com/file/d/1qfZp_uDWRPxPU5U2lN-EGNDfEHkjha1u/view).
 
 ![NavaBoard](proj1/docs/img/intermediateState.png)
 
 ## Tricky Triple
 
-For the second project we have developed a program that could solve [Tricky Triple](https://erich-friedman.github.io/puzzle/shape/)puzzles.
+For the second project we have developed a program that could solve [Tricky Triple](https://erich-friedman.github.io/puzzle/shape/) puzzles.
